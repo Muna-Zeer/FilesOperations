@@ -7,23 +7,42 @@ const error=require('errorhandler')//for error handling
 //function to read files aync and count the words
 const countWordOfFiles = (filePath) => {
     //check if the file exists
-  if (!fs.existsSync(filePath)) {
-    return Promise.reject(`${filePath} is not exists in the current directory`);
-  }
-  //return a promie to async reading of the file
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, "utf8", (err, data) => {
-    //if can't read the file return rejected with err.message
-        if (err) {
-        reject(err.message);
-      } else {
-        //if can read the file return resolve with result of counting words 
-        const countAllWords = wordCount(data);
-        resolve({ file: filePath, wordCount: countAllWords });
-      }
+    if (!fs.existsSync(filePath)) {
+        return Promise.reject(`${filePath} does not exist in the current directory`);
+    }
+
+    // return a promise for asynchronous reading of the file
+    return new Promise((resolve, reject) => {
+        fs.readFile(filePath, "utf8", (err, data) => {
+            // if an error occurs while reading the file, reject the promise
+            if (err) {
+                reject(err.message);
+            } else {
+                // check if the file is empty
+                if (data.trim() === '') {
+                    // resolve the promise with a custom message for empty files
+                    resolve({ file: filePath, wordCount: 0, message: "Your file is empty" });
+                }
+                
+                else {
+                 // Remove symbols from the file content using a regular expression
+                 const cleanData = removeSymbols(data);
+                 // Count the words in the cleaned data
+                 const countAllWords = wordCount(cleanData);
+                 resolve({ file: filePath, wordCount: countAllWords });
+                }
+            }
+        });
     });
-  });
 };
+
+// Function to remove symbols from the word count
+const removeSymbols = (text) => {
+    // This regex removes all non-word characters and whitespace
+      const regex = /[^\w\s]/gi; 
+      return text.replace(regex, '');
+  };
+  
 
 //function to read files from config.json file
 
@@ -45,7 +64,7 @@ const readConfigFiles = () => {
         console.error("Error while reading config.json:", err.message);
       }
       //exist the process when non-zero exist code to config error
-      process.exit(1); 
+     throw new error(`${err.message}`)
     }
   };
 //read the file paths from config.json file   
@@ -80,12 +99,20 @@ try {
     if(element.error){
         console.log(`${element.file} error processing return ${element.error}`);
     }
-    else{
-         // If processing is successful, log the file name and word count
-        console.log(`${element.file} completed successfully and contains of this count of data ${element.wordCount}\n
-        `);
+    else {
+        // If processing is successful but is empty
+        if (element.wordCount === 0 && element.message) {
+            // log error message
+            console.log(`${element.file}: ${element.message}`);
+        } else {
+            
+            // log file nan=me and msg
+            console.log(`${element.file} completed successfully and contains ${element.wordCount} words.`);
+        }
     }
-   }); 
+   }
+   
+   ); 
 } catch (error) {
      // If processing is failed, log this
     console.log('Error processing return ${error.message');

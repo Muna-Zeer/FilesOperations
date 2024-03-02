@@ -1,23 +1,2 @@
-What's new in Mockaroo?
-11/23/2023
-Added a Medical Beneficiary ID data type for the US Medicare system.
-11/1/2023
-You can now use the generate(datatype) function in Formulas to generate data with any of Mockaroo's built-in data types.
-10/11/2023
-You can now return records from a dataset in a Mock API using the from_dataset function.
-7/2/2023
-Added search boxes to each page.
-7/1/2023
-Added the ability to create reusable functions.
-6/24/2023
-Fixed a long standing bug in Sequence where the repeat parameter is not used correctly.
-6/10/2023
-The Password data type now allows you to customize the requirements.
-Added a new Password Hash type that returns the bcrypt hash of a random password.
-Added a new bcrypt(str) function to formulas.
-5/7/2023
-You can now generate more than 5000 records per file using the API with the new ?background=true parameter.
-4/15/2023
-You can now derive a schema from example CSV, JSON, or XML data.
-4/15/2023
-You can now generate your own custom data types using AI.
+Why is test data important?
+If you're developing an application, you'll want to make sure you're testing it under conditions that closely simulate a production environment. In production, you'll have an army of users banging away at your app and filling your database with data, which puts stress on your code. If you're hand-entering data into a test environment one record at a time using the UI, you're never going to build up the volume and variety of data that your app will accumulate in a few days in production. Worse, the data you enter will 
